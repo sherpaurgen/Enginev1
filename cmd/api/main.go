@@ -1,14 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 const version="1.0.0"
@@ -33,6 +31,7 @@ app:=&application{
 	config:cfg,
 	logger:logger,
 }
+
 flag.IntVar(&cfg.port,"port",4000,"Server port to listen on/default port 4000")
 flag.StringVar(&cfg.env,"env","dev","Specify dev or prod enviroment")
 flag.Parse()
@@ -40,7 +39,16 @@ flag.Parse()
 
 
 srv:= &http.Server{
-	Addr: fmt.Sprintf("%d",cfg.port),
-	Handler: router,
+	Addr: fmt.Sprintf(":%d",cfg.port),
+	Handler: app.routes(),
+	IdleTimeout: time.Minute,
+	ReadTimeout: 10*time.Second,
+	WriteTimeout: 30*time.Second,
 }
+logger.Println("Starting server on port ",cfg.port)
+err:=srv.ListenAndServe()
+if err!=nil{
+	log.Fatal(err)
+}
+
 }
