@@ -36,8 +36,6 @@ flag.IntVar(&cfg.port,"port",4000,"Server port to listen on/default port 4000")
 flag.StringVar(&cfg.env,"env","dev","Specify dev or prod enviroment")
 flag.Parse()
 
-
-
 srv:= &http.Server{
 	Addr: fmt.Sprintf(":%d",cfg.port),
 	Handler: app.routes(),
@@ -50,5 +48,4 @@ err:=srv.ListenAndServe()
 if err!=nil{
 	log.Fatal(err)
 }
-
 }
