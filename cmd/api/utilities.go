@@ -10,6 +10,17 @@ func (app *application) writeJSON(w http.ResponseWriter,status int,data interfac
 	wrapper := make(map[string]interface{})  //key is string and any kind of content
 	wrapper[wrap]=data
 	js,err:=json.Marshal(wrapper)
+	/* the json will look like below
+	{
+	    "moviewrap": {
+	        "id": 123,
+	        "title": "mission impossible",
+	        "description": "some description",
+	        "year": 2021,
+	        "updated_at": "2022-03-11T23:51:14.663321+05:45"
+	    }
+	}
+	*/
 	if err!= nil{
 		return err
 	}
