@@ -1,40 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"io"
+	"log"
+	"net"
+	"time"
+)
 
-type Dog struct {
-	sound string
-	legs int
-	speed int
-}
-type Car struct {
-	sound string
-	speed int
-}
-type Check interface {
-	CheckSound() string
-	CheckSpeed() int
-}
 func main(){
-	car1:=Car{sound: "vrooom",speed:999}
-	tommy:=Dog{sound: "woof",speed: 10,legs: 4}
-	var checkInterface1 Check = car1
-	fmt.Println(checkInterface1.CheckSpeed())
-	var checkInterface2 Check = tommy
-	fmt.Println(checkInterface2.CheckSpeed())
-
+	listener,err:=net.Listen("tcp","localhost:8000")
+	if err!=nil{
+		log.Fatalln(err)
+	}
+	for  {
+		conn,err:=listener.Accept()
+		if err!=nil {
+			log.Print(err)
+			continue
+		}
+		handleConn(conn)
+	}
 }
-func (d Dog) CheckSound() string{
-	return "woof"
+func handleConn(c net.Conn){
+	defer c.Close()
+	for {
+		_,err:=io.WriteString(c,time.Now().Format("15:04:05\n"))
+	if err !=nil{ return }
+	}
 }
-func (c Car) CheckSound() string {
-	return "vroom"
-}
-func (d Dog) CheckSpeed() int {
-	return 10
-}
-func (c Car) CheckSpeed() int {
-	return 999
-}
-
-
